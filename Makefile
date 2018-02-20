@@ -1,5 +1,5 @@
 CC = gcc
-INC = ../libft
+INC = ./libft
 NAME = get_next_line
 SRCS = get_next_line.c
 OBJS = $(patsubst %.c, %.o, $(SRCS))
@@ -13,8 +13,8 @@ DOBJS = $(patsubst %.c, %.o, $(DSRCS))
 
 all: $(NAME)
 
-libft.a : /libft/Makefile
-	make -C ../libft/
+libft.a :
+	make -C ./libft/
 $(NAME): libft.a $(OBJS)
 	$(CC) $(OFLAGS)
 
