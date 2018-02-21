@@ -6,21 +6,29 @@
 /*   By: pstringe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/19 10:13:13 by pstringe          #+#    #+#             */
-/*   Updated: 2018/02/21 10:22:06 by pstringe         ###   ########.fr       */
+/*   Updated: 2018/02/21 10:41:39 by pstringe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
+t_buf	*get_buf(const int fd)
+{
+	t_buf	*buf;
+
+	buf = ft_memalloc(sizeof(t_buf));
+	buf->content = ft_strnew(BUFF_SIZE);
+	buf->ret = read(fd, buf->content, BUFF_SIZE);
+	return (buf);
+}
+
 int		get_next_line(const int fd, char **line)
 {
-	int		ret;
-	char 	*buf;
-	
-	buf	= ft_strnew(BUFF_SIZE);
-	if ((ret = read(fd, buf, BUFF_SIZE)) > 0)
-		*line = buf;
-	return (ret);
+	t_buf	*buf;
+		
+	if ((buf = get_buf(fd))->ret > 0)
+		*line = buf->content;
+	return (buf->ret);
 }
 
 int		main(int argc, char **argv)
