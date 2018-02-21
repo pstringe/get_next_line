@@ -6,7 +6,7 @@
 /*   By: pstringe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/19 10:13:13 by pstringe          #+#    #+#             */
-/*   Updated: 2018/02/20 11:43:35 by pstringe         ###   ########.fr       */
+/*   Updated: 2018/02/21 10:22:06 by pstringe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,28 +14,13 @@
 
 int		get_next_line(const int fd, char **line)
 {
-	static char 	*str;
-	char 			*f;
-	int				bytes;
-	char			buf[BUFF_SIZE + 1];
+	int		ret;
+	char 	*buf;
 	
-	bytes = -1;
-	f = NULL;
-	str = ft_strnew(BUFF_SIZE);
-	while ((bytes = read(fd, buf, BUFF_SIZE)) > 0 && !f)
-	{
-		buf[BUFF_SIZE] = '\0';
-		str = ft_strjoin(str, buf);
-		f = strchr(str, '\n');
-	}
-	if (bytes < 1)
-		return (bytes);
-	*f = '\0';
-	*line = ft_strnew(ft_strlen(str));
-	f = (char*)ft_memccpy(*line, str, '\0', ft_strlen(str));
-	ft_bzero((void*)str, ft_strlen(str));
-	str = f;
-	return (1);
+	buf	= ft_strnew(BUFF_SIZE);
+	if ((ret = read(fd, buf, BUFF_SIZE)) > 0)
+		*line = buf;
+	return (ret);
 }
 
 int		main(int argc, char **argv)
@@ -50,7 +35,7 @@ int		main(int argc, char **argv)
 		return (1);
 	}
 	fd = open(argv[1], O_RDONLY);
-	while ((ret = get_next_line(fd, &line)) > 0)
+	while ((ret = get_next_line(fd, &line) && line) > 0)
 	{
 		ft_putendl(line);
 	}
