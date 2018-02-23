@@ -6,7 +6,7 @@
 /*   By: pstringe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/19 10:13:13 by pstringe          #+#    #+#             */
-/*   Updated: 2018/02/22 17:49:29 by pstringe         ###   ########.fr       */
+/*   Updated: 2018/02/22 20:15:58 by pstringe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,40 +110,47 @@ t_cut	*get_untrimed(const int fd, t_cut **trimed)
 	return (untrimed);
 }
 
-char	*trim(t_cut **untrimed)
+char	**trim(t_cut **untrimed, char **line)
 {
 	char	*str;
-	char	*new_content;
+	char	*new_cut;
 	char	*n;
+	int		clen;
+	int		nlen;
 
 	str = NULL;
-	new_content = NULL;
+	new_cut = NULL;
 	n = NULL;
-	if ((n = strchr((*untrimed)->content)))
+	ft_memdel((void**)line);
+	*line = NULL;
+	if ((n = strchr((*untrimed)->cut, '\n')))
 	{
 		*n = '\0';
-		str = ft_memccpy(ft_strnew(ft_strlen((*untrimed)->content)), (*untrimed)->content);
-		(*untrimed)->content = ++n;
-		new_content = ft_strnew(ft_strlen((*untrimed)->content));
-		ft_memcpy(new_content, (*untrimed)->content, ft_strlen(((*untrimed)->content)));
-		ft_memdel((void**)&((*untrimed)->content));
-		(*untrimed)->content = new_content;
+		clen = ft_strlen((*untrimed)->cut);
+		*line = ft_strnew(clen); 
+		ft_memccpy(*line, (*untrimed)->cut, *n, clen);
+		(*untrimed)->cut = (n + 1);
+		new_cut = ft_strnew((nlen = ft_strlen((*untrimed)->cut)));
+		ft_memcpy(new_cut, (*untrimed)->cut, nlen);
+		ft_memdel((void**)((*untrimed)->cut));
+		(*untrimed)->cut = new_cut;
 	}
-	return (!str) ? NULL : str;
+	return (!*line) ? NULL: line;
 }
 
 int		get_next_line(const int fd, char **line)
 {
 	static t_cut	*untrimed;
+	int				l;
 
+	line = (l = (untrimed && untrimed->mark)) ? trim(&untrimed, line) : line;
 	untrimed = (!untrimed) ? get_untrimed(fd, NULL) : untrimed;
-	while (!(*line = trim(&untrimed)) && untrimed->ret > 0)
+	if (!l)
 	{
-		untrimed = get_untrimed(fd, &untrimed);
+		l = !!(line = trim(&untrimed, line));
+		if (untrimed->ret > 0)
+			untrimed = get_untrimed(fd, &untrimed);
 	}
-	if (untrimed->ret = -1)
-		return (ret);
-	
 	return (untrimed->ret);
 }
 
