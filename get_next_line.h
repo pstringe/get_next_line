@@ -6,7 +6,7 @@
 /*   By: pstringe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/19 10:15:13 by pstringe          #+#    #+#             */
-/*   Updated: 2018/02/24 15:22:09 by pstringe         ###   ########.fr       */
+/*   Updated: 2018/02/24 15:55:55 by pstringe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,7 @@
 # define GET_NEXT_LINE_H
 # include "libft.h"
 # include <fcntl.h>
-# define BUFF_SIZE 1
-# define CHERRY 0
-# define POP 1
+# define BUFF_SIZE 6
 
 typedef struct	s_buf
 {
@@ -41,7 +39,6 @@ typedef struct	s_feed
 	char			*cut;
 	char			*mark;
 }				t_feed;
-
 
 /*
 ** get next mother_fucking line

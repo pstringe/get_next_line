@@ -6,7 +6,7 @@
 /*   By: pstringe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/19 10:13:13 by pstringe          #+#    #+#             */
-/*   Updated: 2018/02/24 15:17:28 by pstringe         ###   ########.fr       */
+/*   Updated: 2018/02/24 15:52:56 by pstringe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,10 +37,11 @@ void	feed(const int fd, t_feed *trimed)
 
 	n = NULL;
 	buf = get_buf(fd);
+	trimed->line = (!trimed->status.started) ? ft_strnew(0) : trimed->line;
 	trimed->status.started = 1;
 	while (buf->ret > 0 && !n)
 	{
-		trimed->line = (!(trimed->line)) ? buf->content : ft_strjoin(trimed->line, buf->content);
+		trimed->line = ft_strjoin(trimed->line, buf->content);
 		if ((n = ft_strchr(buf->content, '\n')))
 			break ;
 		ft_memdel((void**)&(buf->content));
