@@ -6,36 +6,15 @@
 /*   By: pstringe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/19 10:13:13 by pstringe          #+#    #+#             */
-/*   Updated: 2018/02/23 19:20:52 by pstringe         ###   ########.fr       */
+/*   Updated: 2018/02/23 21:52:50 by pstringe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
 /*
-** just a function to to sub '\n' with a marker making it easier to debug
+** gets buffer from file descriptor
 */
-void	*format_line(char *line)
-{
-	int  i;
-	char f;
-	char *str;
-
-	str = ft_strnew(ft_strlen(line));
-	f = 'A';
-	i = -1;
-	while (line[++i])
-	{
-		if (line[i] == '\n')
-		{
-			str[i] = f;
-			f++;
-		}
-		else
-			str[i] = line[i];
-	}
-	return (str);
-}
 
 t_buf	*get_buf(const int fd)
 {
@@ -47,52 +26,75 @@ t_buf	*get_buf(const int fd)
 	return (buf);
 }
 
+/*
+** gets feed of buffers from file descriptor 
+*/
+
 void	feed(const int fd, t_feed *trimed)
 {
 	t_buf	*buf;
 	char	*n;
 
-	(*trimed).cherry = ((*trimed).cherry) ? POP : CHERRY;
+	trimed->cherry = (!trimed->cherry) ? POP : CHERRY;
 	n = NULL;
 	buf = get_buf(fd);
 	while (buf->ret > 0 && !n)
 	{
-		(*trimed).line = (!(trimed->line)) ? buf->content : ft_strjoin(trimed->line, buf->content);
-		if((n = ft_strchr(buf->content, '\n')))
+		trimed->line = (!(trimed->line)) ? buf->content : ft_strjoin(trimed->line, buf->content);
+		if ((n = ft_strchr(buf->content, '\n')))
 			break ;
 		ft_memdel((void**)&(buf->content));
 		ft_memdel((void**)&buf);
 		buf = get_buf(fd);
 	}
-	(*trimed).ret = buf->ret;
-	(*trimed).cut = n;
-	(*trimed).mark = strchr((*trimed).cut, '\n');
+	trimed->ret = buf->ret;
+	trimed->cut = n;
+	trimed->mark = strchr(trimed->cut, '\n');
 	ft_memdel((void**)&buf);
 }
+
+/*
+** trims line off of feed
+*/
 
 void	trim(t_feed *untrimed, char **line)
 {
 	int len;
 	
-	*((*untrimed).cut) = '\0';
-	*line = ft_strnew((len = ft_strlen((*untrimed).line)));
-	(*untrimed).line = ft_memccpy(*line, (*untrimed).line, '\n', len + 1);
-	(*untrimed).cut = strchr((*untrimed).line, '\n');
-	(*untrimed).mark = strchr((*untrimed).mark, '\n');
+	*(untrimed->cut) = '\0';
+	*line = ft_strnew((len = ft_strlen(untrimed->line)));
+	untrimed->line = ft_memccpy(*line, untrimed->line, '\n', len + 1);
+	untrimed->cut = strchr(untrimed->line, '\n');
+	untrimed->mark = strchr(untrimed->mark, '\n');
+	
 }
 
+/*
+** gets next line from feed
+*/
 
 int		get_next_line(const int fd, char **line)
 {
 	static t_feed	untrimed;
+	static int		cherry;
 
-	if (!untrimed.cherry || ((untrimed.cherry && !(*(untrimed.line))) && untrimed.ret > 0))
+	if (cherry)
+		return (untrimed.ret);
+	else if (!untrimed.cherry || ((untrimed.cherry && !(*(untrimed.line))) && untrimed.ret > 0))
 		feed(fd, &untrimed);
 	else if (!(untrimed.line) && untrimed.ret < 0)
 		return (untrimed.ret);
-	trim(&untrimed, line);
+	if (untrimed.cherry && untrimed.line)
+		trim(&untrimed, line);
+	untrimed.cherry = (untrimed.cherry && !untrimed.ret && !untrimed.line && !untrimed.cut)
+	? CHERRY : POP;
+	cherry = (!untrimed.cherry) ? POP : CHERRY;
 	return (untrimed.ret);
 }
+
+/*
+** test remove after
+*/
 
 int		main(int argc, char **argv)
 {

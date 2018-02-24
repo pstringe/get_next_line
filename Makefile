@@ -1,7 +1,8 @@
 CC = gcc
 INC = ./libft
 NAME = get_next_line
-SRCS = get_next_line.c
+SRCS = get_next_line.c\
+	   output.c
 OBJS = $(patsubst %.c, %.o, $(SRCS))
 LIBD = -L$(INC) -lft
 CFLAGS = -Wall -Werror -Wextra -I$(INC) 
