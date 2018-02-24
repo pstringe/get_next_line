@@ -6,7 +6,7 @@
 /*   By: pstringe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/19 10:13:13 by pstringe          #+#    #+#             */
-/*   Updated: 2018/02/23 21:52:50 by pstringe         ###   ########.fr       */
+/*   Updated: 2018/02/24 15:17:28 by pstringe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,9 @@ void	feed(const int fd, t_feed *trimed)
 	t_buf	*buf;
 	char	*n;
 
-	trimed->cherry = (!trimed->cherry) ? POP : CHERRY;
 	n = NULL;
 	buf = get_buf(fd);
+	trimed->status.started = 1;
 	while (buf->ret > 0 && !n)
 	{
 		trimed->line = (!(trimed->line)) ? buf->content : ft_strjoin(trimed->line, buf->content);
@@ -47,7 +47,9 @@ void	feed(const int fd, t_feed *trimed)
 		ft_memdel((void**)&buf);
 		buf = get_buf(fd);
 	}
-	trimed->ret = buf->ret;
+	trimed->status.can_feed = (buf->ret == BUFF_SIZE && buf->ret > 0);
+	trimed->status.needs_line = 0;
+	trimed->status.ret = buf->ret;
 	trimed->cut = n;
 	trimed->mark = strchr(trimed->cut, '\n');
 	ft_memdel((void**)&buf);
@@ -66,7 +68,7 @@ void	trim(t_feed *untrimed, char **line)
 	untrimed->line = ft_memccpy(*line, untrimed->line, '\n', len + 1);
 	untrimed->cut = strchr(untrimed->line, '\n');
 	untrimed->mark = strchr(untrimed->mark, '\n');
-	
+	untrimed->status.needs_line = (!untrimed->cut) ? 1 : 0;
 }
 
 /*
@@ -75,21 +77,13 @@ void	trim(t_feed *untrimed, char **line)
 
 int		get_next_line(const int fd, char **line)
 {
-	static t_feed	untrimed;
-	static int		cherry;
+	static t_feed		untrimed;
 
-	if (cherry)
-		return (untrimed.ret);
-	else if (!untrimed.cherry || ((untrimed.cherry && !(*(untrimed.line))) && untrimed.ret > 0))
+	if ((untrimed.status.needs_line && untrimed.status.can_feed) || !untrimed.status.started)
 		feed(fd, &untrimed);
-	else if (!(untrimed.line) && untrimed.ret < 0)
-		return (untrimed.ret);
-	if (untrimed.cherry && untrimed.line)
+	if (!untrimed.status.needs_line)
 		trim(&untrimed, line);
-	untrimed.cherry = (untrimed.cherry && !untrimed.ret && !untrimed.line && !untrimed.cut)
-	? CHERRY : POP;
-	cherry = (!untrimed.cherry) ? POP : CHERRY;
-	return (untrimed.ret);
+	return (untrimed.status.ret);
 }
 
 /*

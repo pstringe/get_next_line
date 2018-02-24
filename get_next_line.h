@@ -6,7 +6,7 @@
 /*   By: pstringe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/19 10:15:13 by pstringe          #+#    #+#             */
-/*   Updated: 2018/02/23 21:52:52 by pstringe         ###   ########.fr       */
+/*   Updated: 2018/02/24 14:41:36 by pstringe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,14 +24,24 @@ typedef struct	s_buf
 	char	*content;
 }				t_buf;
 
+typedef struct	s_status
+{
+	int		started;
+	int		needs_line;
+	int		can_feed;
+	int		can_trim;
+	int		ret;
+}				t_status;
+
 typedef struct	s_feed
 {
-	int		ret;
-	int		cherry;
-	char	*line;
-	char	*cut;
-	char	*mark;
+	int				ret;
+	struct s_status	status;
+	char			*line;
+	char			*cut;
+	char			*mark;
 }				t_feed;
+
 
 /*
 ** get next mother_fucking line
