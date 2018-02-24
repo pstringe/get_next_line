@@ -6,7 +6,7 @@
 /*   By: pstringe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/19 10:15:13 by pstringe          #+#    #+#             */
-/*   Updated: 2018/02/22 15:13:37 by pstringe         ###   ########.fr       */
+/*   Updated: 2018/02/23 11:06:22 by pstringe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,22 +16,18 @@
 # include <fcntl.h>
 # define BUFF_SIZE 1
 
-typedef struct	s_line
-{
-	char	*line;
-	char	*mark;
-}				t_line;
-
 typedef struct	s_buf
 {
 	int		ret;
 	char	*content;
 }				t_buf;
 
-typedef struct	s_cut
+typedef struct	s_feed
 {
 	int		ret;
+	char	*untrimed;
+	char	*line;
 	char	*cut;
 	char	*mark;
-}				t_cut;
+}				t_feed;
 #endif

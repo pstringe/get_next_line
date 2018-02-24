@@ -6,7 +6,7 @@
 /*   By: pstringe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/19 10:13:13 by pstringe          #+#    #+#             */
-/*   Updated: 2018/02/22 17:49:29 by pstringe         ###   ########.fr       */
+/*   Updated: 2018/02/23 18:20:17 by pstringe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,65 +86,53 @@ t_buf	*get_buf(const int fd)
 	return (buf);
 }
 
-t_cut	*get_untrimed(const int fd, t_cut **trimed)
+void	feed(const int fd, t_feed *trimed)
 {
 	t_buf	*buf;
-	t_cut	*untrimed;
 	char	*n;
 
 	n = NULL;
-	untrimed = (!trimed) ? ft_memalloc(sizeof(t_cut)): trimed;
 	buf = get_buf(fd);
 	while (buf->ret > 0 && !n)
 	{
-		untrimed->cut = (!untrimed->cut) ? buf->content : ft_strjoin(untrimed->cut, buf->content);
+		(*trimed).line = (!(trimed->line)) ? buf->content : ft_strjoin(trimed->line, buf->content);
 		if((n = ft_strchr(buf->content, '\n')))
 			break ;
 		ft_memdel((void**)&(buf->content));
 		ft_memdel((void**)&buf);
 		buf = get_buf(fd);
 	}
-	untrimed->ret = buf->ret;
-	untrimed->mark = n;
+	(*trimed).ret = buf->ret;
+	(*trimed).cut = n + 1;
+	(*trimed).mark = strchr((*trimed).cut, '\n');
 	ft_memdel((void**)&buf);
-	return (untrimed);
 }
 
-char	*trim(t_cut **untrimed)
+/*
+void	trim(t_feed **untrimed, char **line)
 {
-	char	*str;
-	char	*new_content;
-	char	*n;
-
-	str = NULL;
-	new_content = NULL;
-	n = NULL;
-	if ((n = strchr((*untrimed)->content)))
-	{
-		*n = '\0';
-		str = ft_memccpy(ft_strnew(ft_strlen((*untrimed)->content)), (*untrimed)->content);
-		(*untrimed)->content = ++n;
-		new_content = ft_strnew(ft_strlen((*untrimed)->content));
-		ft_memcpy(new_content, (*untrimed)->content, ft_strlen(((*untrimed)->content)));
-		ft_memdel((void**)&((*untrimed)->content));
-		(*untrimed)->content = new_content;
-	}
-	return (!str) ? NULL : str;
+	int len;
+	
+	*((*untrimed)->cut) = '\0';
+	*line = ft_strnew((len = ft_strlen((*untrimed)->line)));
+	(*untrimed)->line = ft_memcpy(*line, (*untrimed)->line, len + 1);
+	(*untrimed)->cut = strchr((*untrimed)->line, '\n');
+	(*untrimed)->mark = strchr((*untrimed)->mark, '\n');
 }
+*/
 
 int		get_next_line(const int fd, char **line)
 {
-	static t_cut	*untrimed;
+	static t_feed	untrimed;
 
-	untrimed = (!untrimed) ? get_untrimed(fd, NULL) : untrimed;
-	while (!(*line = trim(&untrimed)) && untrimed->ret > 0)
-	{
-		untrimed = get_untrimed(fd, &untrimed);
-	}
-	if (untrimed->ret = -1)
-		return (ret);
-	
-	return (untrimed->ret);
+	feed(fd, &untrimed);
+	*line = untrimed.line;
+	/*
+	if (!(untrimed->line) && untrimed->ret > 0)
+		feed(fd, &untrimed);
+	trim(&untrimed, line);
+	*/
+	return (untrimed.ret);
 }
 
 int		main(int argc, char **argv)
