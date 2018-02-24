@@ -6,7 +6,7 @@
 /*   By: pstringe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/19 10:13:13 by pstringe          #+#    #+#             */
-/*   Updated: 2018/02/23 18:20:17 by pstringe         ###   ########.fr       */
+/*   Updated: 2018/02/23 19:05:32 by pstringe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,7 @@ void	feed(const int fd, t_feed *trimed)
 	t_buf	*buf;
 	char	*n;
 
+	(*trimed).cherry = ((*trimed).cherry) ? POP : CHERRY;
 	n = NULL;
 	buf = get_buf(fd);
 	while (buf->ret > 0 && !n)
@@ -103,35 +104,32 @@ void	feed(const int fd, t_feed *trimed)
 		buf = get_buf(fd);
 	}
 	(*trimed).ret = buf->ret;
-	(*trimed).cut = n + 1;
+	(*trimed).cut = n;
 	(*trimed).mark = strchr((*trimed).cut, '\n');
 	ft_memdel((void**)&buf);
 }
 
-/*
-void	trim(t_feed **untrimed, char **line)
+void	trim(t_feed *untrimed, char **line)
 {
 	int len;
 	
-	*((*untrimed)->cut) = '\0';
-	*line = ft_strnew((len = ft_strlen((*untrimed)->line)));
-	(*untrimed)->line = ft_memcpy(*line, (*untrimed)->line, len + 1);
-	(*untrimed)->cut = strchr((*untrimed)->line, '\n');
-	(*untrimed)->mark = strchr((*untrimed)->mark, '\n');
+	*((*untrimed).cut) = '\0';
+	*line = ft_strnew((len = ft_strlen((*untrimed).line)));
+	(*untrimed).line = ft_memccpy(*line, (*untrimed).line, '\n', len + 1);
+	(*untrimed).cut = strchr((*untrimed).line, '\n');
+	(*untrimed).mark = strchr((*untrimed).mark, '\n');
 }
-*/
+
 
 int		get_next_line(const int fd, char **line)
 {
 	static t_feed	untrimed;
 
-	feed(fd, &untrimed);
-	*line = untrimed.line;
-	/*
-	if (!(untrimed->line) && untrimed->ret > 0)
+	if (!untrimed.cherry || ((untrimed.cherry && !(*(untrimed.line))) && untrimed.ret > 0))
 		feed(fd, &untrimed);
+	else if (!(untrimed.line) && untrimed.ret < 0)
+		return (untrimed.ret);
 	trim(&untrimed, line);
-	*/
 	return (untrimed.ret);
 }
 
