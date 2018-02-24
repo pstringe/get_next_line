@@ -6,12 +6,12 @@
 /*   By: pstringe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/05 17:26:55 by pstringe          #+#    #+#             */
-/*   Updated: 2018/02/22 16:45:43 by pstringe         ###   ########.fr       */
+/*   Updated: 2018/02/23 19:18:59 by pstringe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-/*
+
 void	*ft_memccpy(void *dst, const void *src, int c, size_t n)
 {
 	char			*s1;
@@ -38,4 +38,3 @@ void	*ft_memccpy(void *dst, const void *src, int c, size_t n)
 	}
 	return (NULL);
 }
-*/

@@ -6,7 +6,7 @@
 /*   By: pstringe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/19 10:13:13 by pstringe          #+#    #+#             */
-/*   Updated: 2018/02/23 19:15:30 by pstringe         ###   ########.fr       */
+/*   Updated: 2018/02/23 19:20:52 by pstringe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,45 +15,6 @@
 /*
 ** just a function to to sub '\n' with a marker making it easier to debug
 */
-void	*ft_memcpy(void *dst, const void *src, size_t n)
-{
-	char		*s1;
-	const char	*s2;
-
-	s1 = (char *)dst;
-	s2 = (const char *)src;
-	while (n-- != 0)
-	{
-		*s1++ = *s2++;
-	}
-	return (dst);
-}
-void	*ft_memccpy(void *dst, const void *src, int c, size_t n)
-{
-	char			*s1;
-	const char		*s2;
-	unsigned char	cc;
-
-	s1 = (char *)dst;
-	s2 = (const char *)src;
-	cc = (unsigned char)c;
-	while (n-- != 0)
-	{
-		if ((unsigned char)*s2 != cc)
-		{
-			ft_memcpy(s1, s2, 1);
-			s1++;
-			s2++;
-		}
-		else
-		{
-			ft_memcpy(s1, s2, 1);
-			s1++;
-			return (s1);
-		}
-	}
-	return (NULL);
-}
 void	*format_line(char *line)
 {
 	int  i;
