@@ -6,7 +6,7 @@
 /*   By: pstringe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/19 10:13:13 by pstringe          #+#    #+#             */
-/*   Updated: 2018/02/22 20:15:58 by pstringe         ###   ########.fr       */
+/*   Updated: 2018/02/23 19:15:30 by pstringe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,72 +86,51 @@ t_buf	*get_buf(const int fd)
 	return (buf);
 }
 
-t_cut	*get_untrimed(const int fd, t_cut **trimed)
+void	feed(const int fd, t_feed *trimed)
 {
 	t_buf	*buf;
-	t_cut	*untrimed;
 	char	*n;
 
+	(*trimed).cherry = ((*trimed).cherry) ? POP : CHERRY;
 	n = NULL;
-	untrimed = (!trimed) ? ft_memalloc(sizeof(t_cut)): trimed;
 	buf = get_buf(fd);
 	while (buf->ret > 0 && !n)
 	{
-		untrimed->cut = (!untrimed->cut) ? buf->content : ft_strjoin(untrimed->cut, buf->content);
+		(*trimed).line = (!(trimed->line)) ? buf->content : ft_strjoin(trimed->line, buf->content);
 		if((n = ft_strchr(buf->content, '\n')))
 			break ;
 		ft_memdel((void**)&(buf->content));
 		ft_memdel((void**)&buf);
 		buf = get_buf(fd);
 	}
-	untrimed->ret = buf->ret;
-	untrimed->mark = n;
+	(*trimed).ret = buf->ret;
+	(*trimed).cut = n;
+	(*trimed).mark = strchr((*trimed).cut, '\n');
 	ft_memdel((void**)&buf);
-	return (untrimed);
 }
 
-char	**trim(t_cut **untrimed, char **line)
+void	trim(t_feed *untrimed, char **line)
 {
-	char	*str;
-	char	*new_cut;
-	char	*n;
-	int		clen;
-	int		nlen;
-
-	str = NULL;
-	new_cut = NULL;
-	n = NULL;
-	ft_memdel((void**)line);
-	*line = NULL;
-	if ((n = strchr((*untrimed)->cut, '\n')))
-	{
-		*n = '\0';
-		clen = ft_strlen((*untrimed)->cut);
-		*line = ft_strnew(clen); 
-		ft_memccpy(*line, (*untrimed)->cut, *n, clen);
-		(*untrimed)->cut = (n + 1);
-		new_cut = ft_strnew((nlen = ft_strlen((*untrimed)->cut)));
-		ft_memcpy(new_cut, (*untrimed)->cut, nlen);
-		ft_memdel((void**)((*untrimed)->cut));
-		(*untrimed)->cut = new_cut;
-	}
-	return (!*line) ? NULL: line;
+	int len;
+	
+	*((*untrimed).cut) = '\0';
+	*line = ft_strnew((len = ft_strlen((*untrimed).line)));
+	(*untrimed).line = ft_memccpy(*line, (*untrimed).line, '\n', len + 1);
+	(*untrimed).cut = strchr((*untrimed).line, '\n');
+	(*untrimed).mark = strchr((*untrimed).mark, '\n');
 }
+
 
 int		get_next_line(const int fd, char **line)
 {
-	static t_cut	*untrimed;
-	int				l;
+	static t_feed	untrimed;
 
-	line = (l = (untrimed && untrimed->mark)) ? trim(&untrimed, line) : line;
-	untrimed = (!untrimed) ? get_untrimed(fd, NULL) : untrimed;
-	if (!l)
-	{
-		l = !!(line = trim(&untrimed, line));
-		if (untrimed->ret > 0)
-			untrimed = get_untrimed(fd, &untrimed);
-	}
-	return (untrimed->ret);
+	if (!untrimed.cherry || ((untrimed.cherry && !(*(untrimed.line))) && untrimed.ret > 0))
+		feed(fd, &untrimed);
+	else if (!(untrimed.line) && untrimed.ret < 0)
+		return (untrimed.ret);
+	trim(&untrimed, line);
+	return (untrimed.ret);
 }
 
 int		main(int argc, char **argv)
