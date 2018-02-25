@@ -6,13 +6,13 @@
 /*   By: pstringe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/19 10:13:13 by pstringe          #+#    #+#             */
-/*   Updated: 2018/02/25 06:17:50 by pstringe         ###   ########.fr       */
+/*   Updated: 2018/02/25 06:28:33 by pstringe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-int 	ft(char **arr, char **line)
+int		ft(char **arr, char **line)
 {
 	char *n;
 	char *tmp;
@@ -35,12 +35,13 @@ int 	ft(char **arr, char **line)
 	}
 	return (1);
 }
+
 int		get_next_line(const int fd, char **line)
 {
-	static char 	*arr[FD_LIMIT];
-	char 			buf[BUFF_SIZE + 1];
-	int				bytes;
-	char			*tmp;
+	static char *arr[FD_LIMIT];
+	char		buf[BUFF_SIZE + 1];
+	int			bytes;
+	char		*tmp;
 
 	if (fd < 0 || fd > FD_LIMIT || !line || (read(fd, buf, 0) < 0))
 		return (-1);
@@ -57,19 +58,5 @@ int		get_next_line(const int fd, char **line)
 		arr[fd] = ft_strdup(tmp);
 		free(tmp);
 	}
-	return(ft(&arr[fd], line));
+	return (ft(&arr[fd], line));
 }
-/*
-int		main(int argc, char **argv)
-{
-	int		fd;
-	int		ret;
-	char 	*line;
-
-	if (argc < 2)
-		fd = 1;
-	else
-		fd = open(fd, O_RDONLY);
-	while ((ret = get_next_line(fd, `)))
-}
-*/
