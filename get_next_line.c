@@ -6,7 +6,7 @@
 /*   By: pstringe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/19 10:13:13 by pstringe          #+#    #+#             */
-/*   Updated: 2018/02/24 15:52:56 by pstringe         ###   ########.fr       */
+/*   Updated: 2018/02/24 16:32:18 by pstringe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,8 @@ void	trim(t_feed *untrimed, char **line)
 	
 	*(untrimed->cut) = '\0';
 	*line = ft_strnew((len = ft_strlen(untrimed->line)));
-	untrimed->line = ft_memccpy(*line, untrimed->line, '\n', len + 1);
+	ft_memccpy(*line, untrimed->line, '\n', len + 1);
+	untrimed->line = (strchr(untrimed->line, '\n') + 1);
 	untrimed->cut = strchr(untrimed->line, '\n');
 	untrimed->mark = strchr(untrimed->mark, '\n');
 	untrimed->status.needs_line = (!untrimed->cut) ? 1 : 0;
