@@ -6,7 +6,7 @@
 /*   By: pstringe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/19 10:15:13 by pstringe          #+#    #+#             */
-/*   Updated: 2018/02/24 16:33:57 by pstringe         ###   ########.fr       */
+/*   Updated: 2018/02/24 16:43:29 by pstringe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define GET_NEXT_LINE_H
 # include "libft.h"
 # include <fcntl.h>
-# define BUFF_SIZE 1
+# define BUFF_SIZE 4
 
 typedef struct	s_buf
 {
