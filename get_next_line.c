@@ -6,7 +6,7 @@
 /*   By: pstringe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/19 10:13:13 by pstringe          #+#    #+#             */
-/*   Updated: 2018/02/24 16:32:18 by pstringe         ###   ########.fr       */
+/*   Updated: 2018/02/24 17:28:01 by pstringe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void	feed(const int fd, t_feed *trimed)
 		ft_memdel((void**)&buf);
 		buf = get_buf(fd);
 	}
-	trimed->status.can_feed = (buf->ret == BUFF_SIZE && buf->ret > 0);
+	trimed->status.can_feed = (buf->ret > 0);
 	trimed->status.needs_line = 0;
 	trimed->status.ret = buf->ret;
 	trimed->cut = n;
