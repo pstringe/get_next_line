@@ -6,8 +6,19 @@
 /*   By: pstringe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/19 10:15:13 by pstringe          #+#    #+#             */
-/*   Updated: 2018/02/19 10:15:31 by pstringe         ###   ########.fr       */
+/*   Updated: 2018/02/25 06:18:48 by pstringe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#ifndef	GET_NEXT_LINE_H
+# define GET_NEXT_LINE_H
+# include "libft.h"
+# include <fcntl.h>
+# include <sys/types.h>
+# include <sys/stat.h>
+# include <stdlib.h>
+# define BUFF_SIZE 5
+# define FD_LIMIT 8000
+
+int		get_next_line(int fd, char **line);
+#endif
