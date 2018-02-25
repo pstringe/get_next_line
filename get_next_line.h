@@ -6,7 +6,7 @@
 /*   By: pstringe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/19 10:15:13 by pstringe          #+#    #+#             */
-/*   Updated: 2018/02/24 17:28:03 by pstringe         ###   ########.fr       */
+/*   Updated: 2018/02/25 06:46:37 by pstringe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,42 +14,11 @@
 # define GET_NEXT_LINE_H
 # include "libft.h"
 # include <fcntl.h>
-# define BUFF_SIZE 5
-
-typedef struct	s_buf
-{
-	int		ret;
-	char	*content;
-}				t_buf;
-
-typedef struct	s_status
-{
-	int		started;
-	int		needs_line;
-	int		can_feed;
-	int		can_trim;
-	int		ret;
-}				t_status;
-
-typedef struct	s_feed
-{
-	int				ret;
-	struct s_status	status;
-	char			*line;
-	char			*cut;
-	char			*mark;
-}				t_feed;
-
-/*
-** get next mother_fucking line
-*/
+# include <sys/types.h>
+# include <sys/stat.h>
+# include <stdlib.h>
+# define BUFF_SIZE 42
+# define FD_LIMIT 8000
 
 int		get_next_line(const int fd, char **line);
-
-/*
-** just for debugging
-*/
-
-void	*format_line(char *line);
-
 #endif
